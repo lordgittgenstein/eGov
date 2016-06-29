@@ -1,0 +1,51 @@
+{% extends 'base_b.html' %}
+
+{% block topbar %}
+<li><a href="{% url "corect.views.index" %}">Home</a></li>
+{% if logged_in == "true" and registered == "true" %}
+<li><a href="{% url "corect.views.subordinates" %}">Subordinates</a></li>
+<li><a href="{% url "corect.views.change_profile" %}">Account</a></li>
+{% endif %}
+{% if logged_in == "true" and registered == "false" %}
+<li><a href="{% url "corect.views.change_key" %}">Key</a></li>
+<li><a href="{% url "corect.views.change_contact" %}">Contact</a></li>
+{% endif %}
+{% if logged_in == "false" %}
+<li><a href="{% url "corect.views.form_a" %}">New Complaint</a></li>
+{% endif %}
+<li><a href="{% url "corect.views.openlist" %}">Public</a></li>
+{% if logged_in == "false" %}
+<li><a href="{% url "corect.views.check" %}">Track Complaint</a></li>
+{% endif %}
+{% if logged_in == "true" and registered == "true" %}
+<li><a href="{% url "corect.views.history" %}">History</a></li>
+<li><a href="{% url "corect.views.recent" %}">Recent <span class="badge">{{ n_recent }}</span></a></li>
+<li><a href="{% url "corect.views.deadlines" %}">Deadlines <span class="badge">{{ n_deadlines }}</span></a></li>
+{% endif %}
+{% if logged_in == "true" %}
+<li><a href="{% url "corect.views.leave" %}">Sign-out</a></li>
+{% endif %}
+{% endblock %}
+
+{% block sidebar %}
+<br />
+<h3>Attention:</h3>
+<p>The complaint cannot be edited online once it is submitted.
+	Carefully check your complaint before you save it.</p>
+<p>You can mark the complaint 'Hidden from public view'. Complaints
+	marked such will not be visible to public online otherwise people will
+	be able to see your complaint on CoRect website.</p>
+{% endblock %} {% block content %}
+<h3>Complaint Detail Form</h3>
+<form action="{% url "corect.views.form_b" %}" method="post" enctype="multipart/form-data">
+	<div class="table-responsive">
+		<table class="table table-striped">
+			{% csrf_token %} {{ form.as_table }}
+			<tr>
+				<td>&nbsp;</td>
+				<td><input type="submit" name="submit_for_report" value="Save >" /></td>
+			</tr>
+		</table>
+	</div>
+</form>
+{% endblock %}

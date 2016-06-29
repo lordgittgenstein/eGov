@@ -1,0 +1,90 @@
+{% extends 'base_history.html' %}
+
+{% block dashbar %}
+{% if user.first_name %}
+<span style="font-size:0.8em;">logged in as</span><br/>
+{% endif %}
+<b>{{ user.first_name }} {{ user.last_name }} </b>
+{% endblock %}
+
+{% block topbar %}
+<li><a href="{% url "corect.views.index" %}">Home</a></li>
+{% if logged_in == "true" and registered == "true" %}
+<li><a href="{% url "corect.views.subordinates" %}">Subordinates</a></li>
+<li><a href="{% url "corect.views.change_profile" %}">Account</a></li>
+{% endif %}
+{% if logged_in == "true" and registered == "false" %}
+<li><a href="{% url "corect.views.change_key" %}">Key</a></li>
+<li><a href="{% url "corect.views.change_contact" %}">Contact</a></li>
+{% endif %}
+{% if logged_in == "false" %}
+<li><a href="{% url "corect.views.check" %}">Track Complaint</a></li>
+{% endif %}
+{% if logged_in == "true" and registered == "true" %}
+<li class="active"><a href="{% url "corect.views.history" %}">History</a></li>
+<li><a href="{% url "corect.views.recent" %}">Recent <span class="badge">{{ n_recent }}</span></a></li>
+<li><a href="{% url "corect.views.deadlines" %}">Deadlines <span class="badge">{{ n_deadlines }}</span></a></li>
+{% endif %}
+{% if logged_in == "false" %}
+<li><a href="{% url "corect.views.form_a" %}">New Complaint</a></li>
+{% endif %}
+{% if logged_in == "true" %}
+<li><a href="{% url "corect.views.leave" %}">Sign-out</a></li>
+{% endif %}
+{% endblock %}
+
+{% block sidebar %}
+<br />
+<h4>Search:</h4>
+<div class="table-responsive">
+	<table class="table">
+		<tr>
+			<td><input type="text" id="search_box" /></td>
+		</tr>
+	</table>
+</div>
+<br />
+<div id="search_div"></div>
+{% endblock %}
+
+{% block content %}
+<br />
+<br />
+<br />
+<div class="table-responsive">
+	<table class="table table-striped">
+		<form action="{% url "corect.views.history" %}" method="post">
+			{% csrf_token %}
+			<tr>
+				<td><b>Get events by date:</b></td>
+			</tr>
+			<tr>
+				<td>{{ form.date_input }}</td>
+			</tr>
+			<tr>
+				<td>{{ form.event }}</td>
+			</tr>
+			<tr>
+				<td><input type="submit" id="submit_filter" value="&nbsp;Filter" /></td>
+			</tr>
+		</form>
+	</table>
+</div>
+<br />
+{% if empty_list %}
+<h4>No such result found.</h4>
+{% endif %}
+<div class="table-responsive">
+	<table class="table table-striped">
+		{% for e in events %}
+		<tr>
+			<td><a href="{% url "corect.views.detail_officer" e.complaint.id %}">{{ e.complaint }}</a></td>
+			<td>{{ e.event }}</td>
+			<td>{{ e.user }}</td>
+			<td>{{ e.detail }}</td>
+			<td>{{ e.datetime|date:"d M Y" }}</td>
+		</tr>
+		{% endfor %}
+	</table>
+</div>
+{% endblock %}

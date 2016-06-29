@@ -1,0 +1,70 @@
+{% extends 'base_key.html' %}
+
+{% block topbar %}
+<li><a href="{% url "corect.views.index" %}">Home</a></li>
+{% if logged_in == "true" and registered == "true" %}
+<li><a href="{% url "corect.views.subordinates" %}">Subordinates</a></li>
+<li><a href="{% url "corect.views.change_profile" %}">Account</a></li>
+{% endif %}
+{% if logged_in == "true" and registered == "false" %}
+{% if message == "Forward" %}
+<li><a href="{% url "corect.views.refer" %}">Forward</a></li>
+{% endif %}
+<li><a href="{% url "corect.views.change_key" %}">Key</a></li>
+<li class="active"><a href="{% url "corect.views.change_contact" %}">Contact</a></li>
+{% endif %}
+{% if logged_in == "false" %}
+<li><a href="{% url "corect.views.check" %}">Track Complaint</a></li>
+{% endif %}
+{% if logged_in == "true" and registered == "true" %}
+<li><a href="{% url "corect.views.history" %}">History</a></li>
+<li><a href="{% url "corect.views.recent" %}">Recent <span class="badge">{{ n_recent }}</span></a></li>
+<li><a href="{% url "corect.views.deadlines" %}">Deadlines <span class="badge">{{ n_deadlines }}</span></a></li>
+{% endif %}
+{% if logged_in == "false" %}
+<li><a href="{% url "corect.views.form_a" %}">New Complaint</a></li>
+{% endif %}
+{% if logged_in == "true" %}
+<li><a href="{% url "corect.views.leave" %}">Sign-out</a></li>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<div style="padding-top: 70px; padding-bottom: 50px;">
+	<span class="label label-default">Change Contact Details:</span><br />
+	Enter your new contact details.<br /> Your previous contact details
+	will be overwritten.<br /> If you leave one field empty your older
+	detail will be set to empty.<br /> At least one contact is required. <br />
+
+	{% if error %}
+	<b style="text-align: left; color: red;">Changes not saved.</b>
+	<p style="text-align: left; color: red;">{{ error }}</p>
+	<br />
+	<br />
+	{% endif %}
+	<br />
+	<div class="table-responsive">
+		<table class="table table-striped">
+			<tr>
+				<td>Current Phone:</td>
+				<td><b>{{ complaint.phone }}</b></td>
+			</tr>
+			<tr>
+				<td>Current eMail:</td>
+				<td><b>{% if complaint.email %}{{ complaint.email }}{% else %}[blank]{% endif %}</b></td>
+			</tr>
+		</table>
+	</div>
+	<form action="{% url "corect.views.change_contact" %}" method="post" enctype="multipart/form-data">
+		<div class="table-responsive">
+			<table class="table table-striped">
+				{% csrf_token %} {{ form.as_table }}
+				<tr>
+					<td></td>
+					<td><input type="submit" id="submit" value="&nbsp;Save&nbsp;" /></td>
+				</tr>
+			</table>
+		</div>
+	</form>
+</div>
+{% endblock %}

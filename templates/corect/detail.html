@@ -1,1 +1,242 @@
+{% extends 'base_detail.html' %}
 
+{% block dashbar %}
+{% if user.first_name %}
+<span style="font-size:0.8em;">logged in as</span><br/>
+{% endif %}
+<b>{{ user.first_name }} {{ user.last_name }} </b>
+{% endblock %}
+
+{% block topbar %}
+{% if logged_in == "true" and registered == "false" %}
+<li class="active"><a href="{% url "corect.views.index" %}">Home</a></li>
+{% else %}
+<li><a href="{% url "corect.views.index" %}">Home</a></li>
+{% endif %}
+{% if logged_in == "true" and registered == "true" %}
+<li><a href="{% url "corect.views.subordinates" %}">Subordinates</a></li>
+<li><a href="{% url "corect.views.change_profile" %}">Account</a></li>
+{% endif %}
+{% if logged_in == "true" and registered == "false" %}
+{% if message == "Forward" %}
+<li><a href="{% url "corect.views.refer" %}">Forward</a></li>
+{% endif %}
+<li><a href="{% url "corect.views.change_key" %}">Key</a></li>
+<li><a href="{% url "corect.views.change_contact" %}">Contact</a></li>
+{% endif %}
+{% if logged_in == "false" %}
+<li><a href="{% url "corect.views.check" %}">Track Complaint</a></li>
+{% endif %}
+{% if logged_in == "true" and registered == "true" %}
+<li><a href="{% url "corect.views.history" %}">History</a></li>
+<li><a href="{% url "corect.views.recent" %}">Recent <span class="badge">{{ n_recent }}</span></a></li>
+<li><a href="{% url "corect.views.deadlines" %}">Deadlines <span class="badge">{{ n_deadlines }}</span></a></li>
+{% endif %}
+{% if logged_in == "false" %}
+<li><a href="{% url "corect.views.form_a" %}">New Complaint</a></li>
+{% endif %}
+{% if logged_in == "true" %}
+<li><a href="{% url "corect.views.leave" %}">Sign-out</a></li>
+{% endif %}
+{% endblock %}
+
+{% block sidebar %}
+<br />
+{% if complaint.document %}
+<br />
+&#128206;&nbsp;
+<a target="_blank" href="{{ complaint.document.url }}"><b>Attachment</b></a>
+<br />
+<br />
+{% endif %}
+
+{% if history %}
+<h4>History&nbsp;&nbsp;</h4>
+<div class="table-responsive">
+	<table class="table table-striped">
+		{% for h in history %}
+		<tr>
+			<td>
+			<span>{{ h.user.first_name }}&nbsp;{{ h.user.last_name }}</span>
+			<br />
+			<span class="text-muted">{{ h.event }} on {{ h.datetime|date:"d M, Y" }}</span>
+			<br />
+			{% if h.detail %}
+			<span>
+			{% if h.event == "set target date" %}
+				{% if is_boss == "true" %} {% if h.id in new_boss_history %} <b> {% endif %}
+				{% else %} {% if h.id in new_officer_history %} <b> {% endif %} {% endif %}
+				<span style="font-size: 15px;"> Target Date&nbsp;[d-m-y]:&nbsp; {{ h.detail }}</span>
+				{% if is_boss == "true" %} {% if h.id in new_boss_history %} </b> {% endif %}
+				{% else %} {% if h.id in new_officer_history %} </b> {% endif %} {% endif %}
+			{% else %}
+				{% if is_boss == "true" %} {% if h.id in new_boss_history %} <b> {% endif %}
+				{% else %} {% if h.id in new_officer_history %} <b> {% endif %} {% endif %}
+				<span style="font-size: 15px;">{{ h.detail }}</span>
+				{% if is_boss == "true" %} {% if h.id in new_boss_history %} </b> {% endif %}
+				{% else %} {% if h.id in new_officer_history %} </b> {% endif %} {% endif %}
+			{% endif %}
+			</span>
+			<br />
+			{% endif %}
+			</td>
+		</tr>
+		{% endfor %}
+	</table>
+</div>
+{% endif %}
+
+<br />
+{% if is_boss == "true" %}
+<div class="table-responsive">
+	Set next target date: <br />
+	<table class="table">
+		<tr>
+			<td>
+				<form class="form-inline" action="{% url "corect.views.wake_up" complaint.id %}" method="post">
+					{% csrf_token %} {{ dform.date_input }}
+					<input type="submit" name="wake_up" value="&nbsp;Set&nbsp;" />
+				</form>
+			</td>
+		</tr>
+	</table>
+</div>
+{% endif %}
+
+{% if not comment_disabled %}
+	{% if group == "officer" or group == "ground" %}
+		<div class="table-responsive">
+			<form action="{% url "corect.views.detail_officer" complaint.id %}" method="post">
+				Post a reply:<br />
+				<table class="table">
+					<tr>
+						<td>{% csrf_token %} {{ form2.text }}</td>
+					</tr>
+					<tr>
+						<td><input type="submit" name="post_message" value="&nbsp;Post&nbsp;"/></td>
+					</tr>
+				</table>
+			</form>
+		</div>
+	{% else %}
+		<div class="table-responsive">
+			<form action="{% url "corect.views.detail_anonymous" complaint.id %}" method="post">
+				Post a reply:<br />
+				<table class="table">
+					<tr>
+						<td>{% csrf_token %} {{ form2.text }}</td>
+					</tr>
+					<tr>
+						<td><input type="submit" name="post_message" value="&nbsp;Post&nbsp;" /></td>
+					</tr>
+				</table>	
+			</form>
+		</div>
+	{% endif %}
+<br />
+{% endif %}
+{% endblock %}
+
+
+{% block content %}
+
+{% if complaint.confidential %}
+<div class="table-responsive">
+	<table class="table table-striped">
+		<tr>
+			<td><b>Requesteded Confidentiality</b></td>
+		</tr>
+	</table>
+</div>
+{% endif %}
+
+<h4>Complaint&nbsp;&nbsp;</h4>
+<div>
+	<div class="table-responsive">
+		<table class="table table-striped">
+			<tr>
+				<td><b>{{ complaint.id }}</b>. &nbsp;{{ complaint.title }}<br /></td>
+			</tr>
+			<tr>
+				<td>&nbsp;Concerned Office:&nbsp;{{ complaint.office }}<br /></td>
+			</tr>
+			<tr>
+				<td>&nbsp;Concerned Officer:&nbsp;{{ officer }}<br /></td>
+			</tr>
+		</table>
+	</div>
+   {% if is_boss == "true" %}
+	{% if complaint.resolved %}
+	<div class="table-responsive">
+		<table class="table table-striped">
+			<tr>
+			<td><b><span class="label label-success" style="font-size: 14px;">Resolved</span></b>
+			{% if mform %}
+			<div style="float: right;">
+				<form action="{% url "corect.views.mark" complaint.id %}" method="post">
+					Mark as Un-resolved: {% csrf_token %} {{ mform.unresolved}}
+					<input type="submit" name="mark" value="&nbsp;Change&nbsp;" class="btn btn-primary btn-xs" />
+				</form>
+			</div>
+			{% endif %}</td>
+			</tr>
+		</table>
+	</div>
+	{% else %}
+	<div class="table-responsive">
+		<table class="table table-striped">
+			<tr>
+			<td><b><span class="label label-warning" style="font-size: 14px;">Un-resolved</span></b>
+			{% if mform %}
+			<div style="float: right;">
+				<form action="{% url "corect.views.mark" complaint.id %}" method="post">
+					Mark as Resolved: {% csrf_token %} {{ mform.resolved}}
+					<input type="submit" name="mark" value="&nbsp;Change&nbsp;" class="btn btn-primary btn-xs"/>
+				</form>
+			</div>
+			{% endif %}</td>
+			</tr>
+		</table>
+	</div>
+	{% endif %}
+   {% else %}
+    {% if complaint.resolved %}
+	<table class="table table-striped">
+		<tr>
+			<td><b><span class="label label-success" style="font-size: 14px;">Resolved</span></b></td>
+		</tr>
+	</table>
+	{% else %}
+	<table class="table table-striped">
+		<tr>
+			<td><b><span class="label label-warning" style="font-size: 14px;">Un-resolved</span></b></td>
+		</tr>
+	</table>
+	{% endif %}
+   {% endif %}
+    <br />
+	<div class="table-responsive">
+		<table class="table table-striped">
+			<tr>
+				<td>&nbsp;</td>
+				<td>{{ complaint.body|safe }}</td>
+			</tr>
+		</table>
+	</div>
+	<br />
+	<h4>Complainant&nbsp;&nbsp;</h4>
+	<div class="table-responsive">
+		<table class="table table-striped">
+			<tr>
+				<td>&nbsp;{{ complaint.name }}&nbsp;&nbsp;&nbsp;</td>
+			</tr>
+			<tr>
+				<td>&nbsp;{{ complaint.phone }}&nbsp;&nbsp;&nbsp;</td>
+			</tr>
+			<tr>
+				<td>&nbsp;{{ complaint.email }}&nbsp;&nbsp;&nbsp;</td>
+			</tr>
+		</table>
+	</div>
+</div>
+{% endblock %}

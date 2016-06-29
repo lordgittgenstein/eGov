@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block topbar %}
+<li><a href="{% url "corect.views.index" %}">Home</a></li>
+{% if logged_in == "true" and registered == "true" %}
+<li><a href="{% url "corect.views.subordinates" %}">Subordinates</a></li>
+<li><a href="{% url "corect.views.change_profile" %}">Account</a></li>
+{% endif %}
+{% if logged_in == "true" and registered == "false" %}
+<li><a href="{% url "corect.views.change_key" %}">Key</a></li>
+<li><a href="{% url "corect.views.change_contact" %}">Contact</a></li>
+{% endif %}
+{% if logged_in == "false" %}
+<li><a href="{% url "corect.views.check" %}">Track Complaint</a></li>
+{% endif %}
+{% if logged_in == "true" and registered == "true" %}
+<li><a href="{% url "corect.views.history" %}">History</a></li>
+<li><a href="{% url "corect.views.recent" %}">Recent <span class="badge">{{ n_recent }}</span></a></li>
+<li><a href="{% url "corect.views.deadlines" %}">Deadlines <span class="badge">{{ n_deadlines }}</span></a></li>
+{% endif %}
+{% if logged_in == "false" %}
+<li><a href="{% url "corect.views.form_a" %}">New Complaint</a></li>
+{% endif %}
+{% if logged_in == "true" %}
+<li><a href="{% url "corect.views.leave" %}">Sign-out</a></li>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<h3>ATTENTION:</h3>
+<h3>NOTE the COMPLAINT NUMBER &amp; PASS KEY, given below, for reference.</h3>
+<h3>Your complaint has been SAVED.</h3>
+<br />
+<div class="table-responsive">
+	<table class="table table-striped">
+		<tr>
+			<td>Complaint No.</td>
+			<td>{{ newid }}</td>
+		</tr>
+		<tr>
+			<td>Private Key</td>
+			<td>{{ complaint.key }}</td>
+		</tr>
+		<tr>
+			<td>Title</td>
+			<td>{{ complaint.title }}</td>
+		</tr>
+		<tr>
+			<td>Body</td>
+			<td>{{ complaint.body|safe }}</td>
+		</tr>
+		<tr>
+			<td>Office</td>
+			<td>{{ complaint.office }}</td>
+		</tr>
+		<tr>
+			<td>Confidential</td>
+			<td>{{ complaint.confidential }}</td>
+		</tr>
+		<tr>
+			<td>Name</td>
+			<td>{{ complaint.name }}</td>
+		</tr>
+		<tr>
+			<td>eMail</td>
+			<td>{{ complaint.email }}</td>
+		</tr>
+		<tr>
+			<td>Phone</td>
+			<td>{{ complaint.phone }}</td>
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+			<td><a href="{% url "corect.views.index" %}" class="btn">Done</a></td>
+		</tr>
+	</table>
+</div>
+{% endblock %}

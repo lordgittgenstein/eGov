@@ -1,0 +1,53 @@
+{% extends 'base_home.html' %}
+
+{% block dashbar %}
+{% if user.first_name %}
+<span style="font-size:0.8em;">logged in as</span><br/>
+{% endif %}
+<b>{{ user.first_name }} {{ user.last_name }} </b>
+{% endblock %}
+
+{% block topbar %}
+<li class="active"><a href="{% url "corect.views.index" %}">Home</a></li>
+{% if logged_in == "true" and registered == "true" %}
+<li><a href="{% url "corect.views.subordinates" %}">Subordinates</a></li>
+<li><a href="{% url "corect.views.change_profile" %}">Account</a></li>
+{% endif %}
+{% if logged_in == "true" and registered == "false" %}
+<li><a href="{% url "corect.views.change_key" %}">Key</a></li>
+<li><a href="{% url "corect.views.change_contact" %}">Contact</a></li>
+{% endif %}
+{% if logged_in == "false" %}
+<li><a href="{% url "corect.views.check" %}">Track Complaint</a></li>
+{% endif %}
+{% if logged_in == "true" and registered == "true" %}
+<li><a href="{% url "corect.views.history" %}">History</a></li>
+<li><a href="{% url "corect.views.recent" %}">Recent <span class="badge">{{ n_recent }}</span></a></li>
+<li><a href="{% url "corect.views.deadlines" %}">Deadlines <span class="badge">{{ n_deadlines }}</span></a></li>
+{% endif %}
+{% if logged_in == "false" %}
+<li><a href="{% url "corect.views.form_a" %}">New Complaint</a></li>
+{% endif %}
+{% if logged_in == "true" %}
+<li><a href="{% url "corect.views.leave" %}">Sign-out</a></li>
+{% endif %}
+{% endblock %}
+
+{% block sidebar %}
+<br />
+<h4>Search:</h4>
+<div class="table-responsive">
+	<table class="table">
+		<tr>
+			<td><input type="text" id="search_box" /></td>
+		</tr>
+	</table>
+</div>
+<br />
+<div id="search_div"></div>
+{% endblock %}
+
+{% block content %}
+<input type="hidden" id="page_number" value="1" />
+<div id="content_div" style="padding-top: 70px; padding-bottom: 10px;"></div>
+{% endblock %}

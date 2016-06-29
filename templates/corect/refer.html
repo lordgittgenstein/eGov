@@ -1,0 +1,128 @@
+{% extends 'base_check.html' %}
+
+{% block topbar %}
+<li><a href="{% url "corect.views.index" %}">Home</a></li>
+{% if logged_in == "true" and registered == "true" %}
+<li><a href="{% url "corect.views.subordinates" %}">Subordinates</a></li>
+<li><a href="{% url "corect.views.change_profile" %}">Account</a></li>
+{% endif %}
+{% if logged_in == "true" and registered == "false" %}
+{% if message == "Forward" %}
+<li class="active"><a href="{% url "corect.views.refer" %}">Forward</a></li>
+{% endif %}
+<li><a href="{% url "corect.views.change_key" %}">Key</a></li>
+<li><a href="{% url "corect.views.change_contact" %}">Contact</a></li>
+{% endif %}
+{% if logged_in == "false" %}
+<li><a href="{% url "corect.views.check" %}">Track Complaint</a></li>
+{% endif %}
+{% if logged_in == "true" and registered == "true" %}
+<li><a href="{% url "corect.views.history" %}">History</a></li>
+<li><a href="{% url "corect.views.recent" %}">Recent <span class="badge">{{ n_recent }}</span></a></li>
+<li><a href="{% url "corect.views.deadlines" %}">Deadlines <span class="badge">{{ n_deadlines }}</span></a></li>
+{% endif %}
+{% if logged_in == "false" %}
+<li><a href="{% url "corect.views.form_a" %}">New Complaint</a></li>
+{% endif %}
+{% if logged_in == "true" %}
+<li><a href="{% url "corect.views.leave" %}">Sign-out</a></li>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<br />
+
+{% if exists == "Exists" %}
+<div class="table-responsive">
+	<table class="table table-striped">
+		<tr>
+			<td>Complaint has already been forwarded. Please login using the
+				new complaint number to track the complaint.</td>
+		</tr>
+		<tr>
+			<td>Click the Track button to go to the tracking page: 
+			<a class="btn btn-info pull-right" href="{% url "corect.views.check" %}">
+					<span>Track</span></b>
+			</a></td>
+		</tr>
+	</table>
+</div>
+{% else %}
+{% if message == 'Track' %}
+<div class="table-responsive">
+	<table class="table table-striped">
+		<tr>
+			<td>You can forward when 21 days have passed.</td>
+		</tr>
+		<tr>
+			<td>Track you complaint by clicking the Track button: 
+			<a class="btn btn-info pull-right" href="{% url "corect.views.check" %}">
+					<span>Track</span></b>
+			</a></td>
+		</tr>
+	</table>
+</div>
+{% endif %}
+
+{% if message == 'Forward' %}
+<div class="table-responsive">
+	<table class="table table-striped">
+		<tr>
+			<td><b>Forward complaint to higher officer:</b> <br /> <br />
+				<div class="table-responsive">
+					<table class="table table-striped">
+						<tr>
+							<td>COMPLAINT NUMBER</td>
+							<td>{{ complaint.id }}</td>
+						</tr>
+						<tr>
+							<td>PASS KEY</td>
+							<td><div id="key_div">{{ complaint.key }}</div><button id="key_button">Show</button></td>
+						</tr>
+						<tr>
+							<td>Title</td>
+							<td>{{ complaint.title }}</td>
+						</tr>
+						<tr>
+							<td>Body</td>
+							<td>{{ complaint.body|safe }}</td>
+						</tr>
+						<tr>
+							<td>Office</td>
+							<td>{{ complaint.office }}</td>
+						</tr>
+						<tr>
+							<td>Confidential</td>
+							<td>{{ complaint.confidential }}</td>
+						</tr>
+						<tr>
+							<td>Name</td>
+							<td>{{ complaint.name }}</td>
+						</tr>
+						<tr>
+							<td>eMail</td>
+							<td>{{ complaint.email }}</td>
+						</tr>
+						<tr>
+							<td>Phone</td>
+							<td>{{ complaint.phone }}</td>
+						</tr>
+					</table>
+				</div> <br /> The complaint above will be forwarded to the higher
+				authorities. This means that a new complaint will be generated
+				against the current higher officer for in-action and sent to a
+				superior level officer above.<br /> Your complaint number will
+				change but the complaint key will remain the same.<br /> To forward
+				this complaint press the Forward button:<br />
+				<a class="btn btn-warning pull-right" href="{% url "corect.views.forward" complaint.id %}">
+					<span>Forward</span></b>
+			</a></td>
+		<tr>
+			<td>&nbsp;</td>
+		</tr>
+		</tr>
+	</table>
+</div>
+{% endif %}
+{% endif %}
+{% endblock %}
