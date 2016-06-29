@@ -1,0 +1,21 @@
+<option value="" selected="selected"></option>
+{% if district %}
+	{% for l in locations %}
+		<option value="{{ l.district }}">{{ l.district }}</option>
+	{% endfor %}
+{% endif %}
+
+{% if subdistrict %}
+	{% for l in locations %}
+		<option value="{{ l.subdistrict }}">{{ l.subdistrict }}</option>
+	{% endfor %}
+{% endif %}
+
+{% if locality %}
+	{% for l in locations %}
+		<option value="{{ l.locality }}">{{ l.locality }}</option>
+	{% endfor %}
+{% endif %}
+
+{% if error %}
+{% endif %}

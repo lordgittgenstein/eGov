@@ -1,0 +1,61 @@
+{% if not empty_subdeadlines %}
+<h4>Deadlines Set by You</h4>
+<div style="padding-bottom: 70px;" class="table-responsive">
+	<table class="table table-striped">
+		<tr>
+			<th>ID</th>
+			<th>Title</th>
+			<th>Complainant</th>
+			<th>Lodged</th>
+			<th>Target Date</th>
+		</tr>
+		{% for c in subcomplaints %}
+		<tr>
+			<td>&nbsp;{{ c.id }}&nbsp;</td>
+			<td><a href="{% url "corect.views.detail_officer" c.id %}">{{ c.title }}</a></td>
+			<td>{{ c.name }}</td>
+			<td>{{ c.datetime|date:"d M Y" }}</td>
+			<td>{{ c.wake_up|date:"d M Y" }}</td>
+		</tr>
+		{% endfor %}
+		{% if sub_total_pages != 1 %}
+		<tr>
+			<td colspan="5">
+				<div class="text-center">
+					<input type="hidden" id="sub_total_pages" value="{{ sub_total_pages }}" />
+					<ul class="pagination">
+						<li><a href="#" id="sub_first_button" onclick="sub_first_button_fun();">1</a></li>
+						<li><a href="#" id="sub_previous_button" onclick="sub_previous_button_fun();">&laquo;</a></li>
+						{% for i in sub_range %}
+							{% if i == sub_page %}
+							<li><a href="#"><b style="color: grey;">{{ i }}</b></a></li>
+							{% else %}
+								{% if not i < 1 and not i > sub_total_pages %}
+									<li><a href="#" onclick="sub_i_button_fun({{ i }});">
+									{% if i < 10 %}&nbsp;{{ i }}&nbsp;{% else %}{{ i }}{% endif %}</a></li>
+								{% else %}
+									<li><a href="#">&nbsp;&nbsp;&nbsp;</a></li>
+								{% endif %}
+							{% endif %}
+						{% endfor %}
+						<li><a href="#" id="sub_next_button" onclick="sub_next_button_fun();">&raquo;</a></li>
+						<li><a href="#" id="sub_last_button" onclick="sub_last_button_fun();">{{ sub_total_pages }}</a></li>
+					</ul>
+				</div>
+			</td>
+		</tr>
+		{% endif %}
+	</table>
+</div>
+{% else %}
+<div class="table-responsive" style="padding-bottom: 70px;">
+	<table class="table">
+		<tr>
+			<td><b>Deadlines set by you</b></td>
+		</tr>
+		<tr>
+			<td><b>The list is empty.</b></td>
+		</tr>
+	</table>
+</div>
+{% endif %}

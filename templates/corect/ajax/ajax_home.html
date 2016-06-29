@@ -1,0 +1,72 @@
+{% if not empty_list %}
+<h4>
+	Complaints directed at you. 
+	<span class="label label-info">{{ new_complaints }} new</span>&nbsp; 
+	<span class="label label-warning">{{ n_complaints }} total</span>
+</h4>
+{% if page %}
+<p class="pull-right">Page&nbsp;{{ page }}&nbsp;of&nbsp;{{ total_pages }}</p>
+{% endif %}
+<div class="table-responsive">
+	<table class="table table-striped">
+		<tr>
+			<th>ID</th>
+			<th>Title</th>
+			<th>Complainant</th>
+			<th>Lodged</th>
+		</tr>
+		{% for c in complaints %}
+		<tr>
+			<td>&nbsp;{{ c.id }}&nbsp;</td>
+			<td>
+				<a href="{% url "corect.views.detail_officer" c.id %}">
+					{% if not c.is_read_officer %}<b>{% endif %} 
+						{{ c.title }} 
+					{% if not c.is_read_officer %}</b>{% endif %}
+				</a>
+			</td>
+			<td>{{ c.name }}</td>
+			<td>{{ c.datetime|date:"d M Y" }}</td>
+		</tr>
+		{% endfor %}
+		
+		{% if total_pages != 1 %}
+		<tr>
+			<td colspan="5">
+				<div class="text-center">
+					<input type="hidden" id="total_pages" value="{{ total_pages }}" />
+					<ul class="pagination">
+						<li><a href="#" id="first_button" onclick="first_button_fun();">1</a></li>
+						<li><a href="#" id="previous_button" onclick="self_previous_button_fun();">&laquo;</a></li>
+						{% for i in range %}
+							{% if i == page %}
+								<li><a href="#"><b style="color: grey;">{{ i }}</b></a></li>
+							{% else %}
+								{% if not i < 1 and not i > total_pages %}
+									<li> <a href="#" onclick="i_button_fun({{ i }});">
+										{% if i < 10 %} &nbsp;{{ i }}&nbsp; {% else %} {{ i }} {% endif %}
+									</a> </li>
+								{% else %}
+									<li><a href="#">&nbsp;&nbsp;&nbsp;</a></li>
+								{% endif %}
+							{% endif %}
+						{% endfor %}
+						<li><a href="#" id="next_button" onclick="self_next_button_fun();">&raquo;</a></li>
+						<li><a href="#" id="last_button" onclick="last_button_fun();">{{ total_pages }}</a></li>
+					</ul>
+				</div>
+			</td>
+		</tr>
+		{% endif %}
+	</table>
+</div>
+
+{% else %}
+<div class="table-responsive">
+	<table class="table">
+		<tr>
+			<td><b>No pending complaints against you.</b></td>
+		</tr>
+	</table>
+</div>
+{% endif %}

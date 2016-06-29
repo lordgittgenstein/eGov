@@ -1,0 +1,67 @@
+{% if not empty_list %}
+<h3>Recent</h3>
+{% if page %}
+<p class="pull-right">Page&nbsp;{{ page }}&nbsp;of&nbsp;{{ total_pages }}</p>
+{% endif %}
+<div class="table-responsive">
+	<table class="table table-striped">
+		<tr>
+			<th>Complaint</th>
+			<th>User</th>
+			<th>Event</th>
+			<th>Detail</th>
+			<th>Date</th>
+		</tr>
+		{% for e in events %}
+		<tr>
+			<td><a href="{% url "corect.views.detail_officer" e.complaint.id %}">{{ e.complaint.title }}</a>&nbsp;(#{{ e.complaint.id }})</td>
+			<td>{{ e.user }}</td>
+			<td>{{ e.event }}</td>
+			{% if e.event == "set target date" %}
+			<td>Target Date&nbsp;(d-m-y):&nbsp;{{ e.detail }}</td>
+			{% else %} <td>{{ e.detail }}</td> {% endif %}
+			<td>{{ e.datetime|date:"d M Y" }}</td>
+		</tr>
+		{% endfor %}
+		{% if total_pages != 1 %}
+		<tr>
+			<td colspan="5">
+				<div class="text-center">
+					<input type="hidden" id="total_pages" value="{{ total_pages }}" />
+					<ul class="pagination">
+						<li><a href="#" id="first_button" onclick="first_button_fun();">1</a></li>
+						<li><a href="#" id="previous_button" onclick="previous_button_fun();">&laquo;</a></li>
+						{% for i in range %}
+							{% if i == page %}
+								<li><a href="#"><b style="color: grey;">{{ i }}</b></a></li>
+							{% else %}
+								{% if not i < 1 and not i > total_pages %}
+									<li><a href="#" onclick="i_button_fun({{ i }});">
+									{% if i < 10 %}&nbsp;{{ i }}&nbsp;{% else %}{{ i }}{% endif %}</a></li>
+								{% else %}
+									<li><a href="#">&nbsp;&nbsp;&nbsp;</a></li>
+								{% endif %}
+							{% endif %}
+						{% endfor %}
+						<li><a href="#" id="next_button" onclick="next_button_fun();">&raquo;</a></li>
+						<li><a href="#" id="last_button" onclick="last_button_fun();">{{ total_pages }}</a></li>
+					</ul>
+				</div>
+			</td>
+		</tr>
+		{% endif %}
+	</table>
+</div>
+
+{% else %}
+<div class="table-responsive">
+	<table class="table">
+		<tr>
+			<td><b>Recent</b></td>
+		</tr>
+		<tr>
+			<td><b>The list is empty.</b></td>
+		</tr>
+	</table>
+</div>
+{% endif %}

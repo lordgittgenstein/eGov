@@ -1,1 +1,12 @@
-
+You searched for: {{ string }}
+<br />
+<br />
+<table class="table table-striped">
+	{% for c in table %}
+	<tr>
+		<td><a href="{% url "corect.views.detail_officer" c.id %}">{{ c.title }}</a></td>
+		<td>{{ c.name }}</td>
+	</tr>
+	{% endfor %}
+</table>
+</div>

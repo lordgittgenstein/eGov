@@ -1,0 +1,12 @@
+<h4>Enter earlier complaint number &amp; key:</h4>
+<form action="{% url "corect.views.refer" %}" method="post" enctype="multipart/form-data">
+	<div class="table-responsive">
+		<table class="table table-striped">
+			{% csrf_token %} {{ form.as_table }}
+			<tr>
+				<td>&nbsp;</td>
+				<td><input type="submit" name="submit_for_refer" value="Submit >" /></td>
+			</tr>
+		</table>
+	</div>
+</form>
