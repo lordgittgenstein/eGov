@@ -1,1 +1,76 @@
-
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+<head>
+<title>
+{% block title %}
+eGov CoRect
+{% endblock %}
+</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+<link href="{% static 'css/styles.css' %}" rel="stylesheet">
+<link href="{% static 'css/jquery-ui.css' %}" rel="stylesheet">
+<link href="{% static 'css/eGov.css' %}" rel="stylesheet">
+<link rel="icon" type="image/png" href="{% static 'img/olive.png' %}" />
+<script src="{% static 'js/tinymce/tinymce.min.js' %}"></script>
+<script> tinymce.init({selector:'textarea'}); </script>
+</head>
+<body>
+	<div class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<a href="#" class="navbar-brand">
+			<img src="{% static 'img/logo.png' %}"/>&nbsp;
+			{% block sitename %}
+			eGov CoRect
+			{% endblock %}
+			</a>
+			<button class="navbar-toggle" data-toggle="collapse"
+				data-target=".navHeaderCollapse">
+				<span class="icon-bar"></span> <span class="icon-bar"></span> <span
+					class="icon-bar"></span>
+			</button>
+			<div class="collapse navbar-collapse navHeaderCollapse">
+				<ul class="nav navbar-nav navbar-right">
+						{% block topbar %}
+						{% endblock %}
+					
+					<li><a href="#">Help</a></li>
+					<li class="dropdown"><a href="#" class="dropdown-toggle"
+						data-toggle="dropdown">Follow Us<b class="caret"></b></a>
+						<ul class="dropdown-menu">
+							<li><a href="#">Twitter</a></li>
+							<li><a href="#">Facebook</a></li>
+							<li><a href="#">Google+</a></li>
+					</ul></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	
+	<div class="col-lg-1" style="padding-top: 50px; padding-bottom: 50px;">
+	
+	</div>
+	<div class="col-lg-10" style="padding-top: 50px; padding-bottom: 50px;">
+	{% block sidebar %}
+	{% endblock %}
+	{% block content %}
+	{% endblock %}
+	</div>
+	<div class="col-lg-1" style="padding-top: 50px; padding-bottom: 50px;">
+	
+	</div>
+	<div class="navbar navbar-default navbar-static-bottom">
+		<div class="container">
+			<p class="navbar-text pull-left">
+			Copyright stuff. Legal stuff. Other info. Etc.
+			{% block dashbar %}
+			{% endblock %}</p>
+		</div>
+	</div>
+	<script src="{% static 'js/jquery.js' %}"></script>
+	<script src="{% static 'js/jquery-ui.js' %}"></script>
+	<script src="{% static 'js/bootstrap.js' %}"></script>
+	<script src="{% static 'ajax/detail.js' %}"></script>
+</body>
+</html>

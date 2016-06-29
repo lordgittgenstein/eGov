@@ -44,11 +44,11 @@ eGov CoRect
 			</div>
 		</div>
 	</div>
-	<div class="col-lg-3" style="padding-top: 50px;">
+	<div class="col-lg-3" style="padding-top: 50px;padding-bottom: 50px;">
 	{% block sidebar %}
 	{% endblock %}
 	</div>
-	<div class="col-lg-9" style="padding-bottom: 50px;">
+	<div class="col-lg-9" style="padding-top: 50px;padding-bottom: 50px;">
 	{% block content %}
 	{% endblock %}
 	</div>
@@ -61,6 +61,7 @@ eGov CoRect
 	</div>
 	<script src="{% static 'js/jquery.js' %}"></script>
 	<script src="{% static 'js/bootstrap.js' %}"></script>
-	<script src="{% static 'ajax/subordinates.js' %}"></script>
+	<script src="{% static 'ajax/search.js' %}"></script>
+	<script src="{% static 'ajax/deadlines.js' %}"></script>
 </body>
 </html>
